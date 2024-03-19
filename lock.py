@@ -58,7 +58,7 @@ class AugustLock(AugustEntityMixin, RestoreEntity, LockEntity):
             return
         await self._call_lock_operation(self._data.async_lock)
 
-    async def async_unlatch(self, **kwargs: Any) -> None:
+    async def async_open(self, **kwargs: Any) -> None:
         """Unlatch the device."""
         assert self._data.activity_stream is not None
         if self._data.activity_stream.pubnub.connected:
@@ -143,7 +143,6 @@ class AugustLock(AugustEntityMixin, RestoreEntity, LockEntity):
 
         self._attr_is_jammed = self._lock_status is LockStatus.JAMMED
         self._attr_is_locking = self._lock_status is LockStatus.LOCKING
-        self._attr_is_unlatching = self._lock_status is LockStatus.UNLATCHING
         self._attr_is_unlocking = self._lock_status is LockStatus.UNLOCKING
 
         self._attr_extra_state_attributes = {

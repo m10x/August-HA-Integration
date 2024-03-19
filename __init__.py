@@ -127,6 +127,10 @@ def _async_trigger_ble_lock_discovery(
             ),
         )
 
+class LockEntityFeature(IntFlag):
+    """Supported features of the lock entity."""
+
+    OPEN = 1
 
 class AugustData(AugustSubscriberMixin):
     """August data object."""
@@ -149,6 +153,7 @@ class AugustData(AugustSubscriberMixin):
         self._locks_by_id: dict[str, Lock] = {}
         self._house_ids: set[str] = set()
         self._pubnub_unsub: CALLBACK_TYPE | None = None
+        self._attr_supported_features: LockEntityFeature = LockEntityFeature(0)
 
     @property
     def brand(self) -> str:
@@ -408,7 +413,7 @@ class AugustData(AugustSubscriberMixin):
             hyper_bridge,
         )
     
-    async def async_unlatch(self, device_id: str) -> list[ActivityTypes]:
+    async def async_unlock(self, device_id: str) -> list[ActivityTypes]:
         """Unlatch the device."""
         return await self._async_call_api_op_requires_bridge(
             device_id,
@@ -417,7 +422,7 @@ class AugustData(AugustSubscriberMixin):
             device_id,
         )
 
-    async def async_unlatch_async(self, device_id: str, hyper_bridge: bool) -> str:
+    async def async_unlock_async(self, device_id: str, hyper_bridge: bool) -> str:
         """Unlatch the device but do not wait for a response since it will come via pubnub."""
         return await self._async_call_api_op_requires_bridge(
             device_id,
